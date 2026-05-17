@@ -24,6 +24,12 @@ SCORE_TEMPLATES_DIR = os.environ.get(
     "REWARDHARNESS_TEMPLATES_DIR",
     os.path.join(PROJECT_ROOT, "score-guidelines"),
 )
+# Model id sent to vLLM's /v1/chat/completions. Must match the value your
+# server reports at /v1/models. Override when serving a non-Qwen model.
+SUBAGENT_MODEL = os.environ.get(
+    "REWARDHARNESS_SUBAGENT_MODEL",
+    "Qwen2.5-VL-7B-Instruct",
+)
 MAX_TOOL_CALLS = 5
 
 BASE_INSTRUCTIONS_NO_TOOLS = """You are an expert image editing quality evaluator comparing two edited images (A and B) against a source image.
@@ -95,7 +101,7 @@ class SubAgent:
                 endpoint = self.endpoint_pool.next()
                 client = OpenAI(base_url=endpoint, api_key="token")
                 resp = client.chat.completions.create(
-                    model="Qwen2.5-VL-7B-Instruct",
+                    model=SUBAGENT_MODEL,
                     messages=messages,
                     max_tokens=max_tokens,
                 )
