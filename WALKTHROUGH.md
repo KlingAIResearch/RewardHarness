@@ -94,17 +94,23 @@ make demo
 
 Runs `scripts/run_evolution.py` for exactly one iteration over the 60-example training split and writes `results/demo/`. Walks through Router → Sub-Agent → ChainAnalyzer → Evolver once, so you can confirm the whole pipeline works on your hardware.
 
-## 8. Full benchmark (read-only, requires an evolved Library)
+## 8. Full benchmark (read-only)
 
-If you have a prior `results/<run>/checkpoints/best/` from your own run:
+You don't have to run evolution first &mdash; `src/library/` ships with the paper's evolved Skills and Tools. To reproduce the paper's headline numbers against a hosted Sub-Agent, just point benchmark at the default (shipped) library:
+
+```bash
+python scripts/run_benchmark.py --config configs/default.yaml
+```
+
+That reports K=2/3/4 accuracy on EditReward-Bench and a single number on GenAI-Bench, using the entries committed at `src/library/`. With the paper's evolved Library this lands at **45.7%** average (Qwen Sub-Agent) or **47.4%** (Gemini-2.0-Flash Sub-Agent).
+
+To benchmark *your own* evolved Library from a prior run instead:
 
 ```bash
 python scripts/run_benchmark.py \
   --config configs/default.yaml \
   --library-dir results/<run>/checkpoints/best
 ```
-
-Reports K=2/3/4 accuracy on EditReward-Bench and a single number on GenAI-Bench. With the paper's evolved Library this lands at **45.7%** average (Qwen Sub-Agent) or **47.4%** (Gemini-2.0-Flash Sub-Agent).
 
 ## 9. Full paper reproduction
 
