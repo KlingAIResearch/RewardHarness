@@ -35,6 +35,6 @@ python scripts/run_evolution.py \
   --results-dir results/from_seed/
 ```
 
-The seed isn't the paper's evolved Library — it's a tiny illustrative starter so you don't have to begin from an empty registry. The paper's full 7-entry final library is reproduced via `make reproduce`.
+The seed isn't the paper's evolved Library — it's a tiny illustrative starter so you don't have to begin from an empty registry. The paper's final 6-entry library (3 Skills + 3 Tools) is committed at [`src/library/`](../src/library/) and is what `make benchmark` benchmarks by default; `make reproduce` evolves a fresh library from scratch end-to-end.
 
 If you want to see the Library in action against a real Sub-Agent, run `make demo` instead (1-iteration evolution; requires Gemini + a single vLLM endpoint).
