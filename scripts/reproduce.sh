@@ -15,10 +15,14 @@ cleanup() {
     for pid in "${VLLM_PIDS[@]}"; do
         kill "$pid" 2>/dev/null || true
     done
-    # Kill any remaining vLLM processes on ports 8000-8015
-    for port in $(seq 8000 8015); do
-        fuser -k "$port/tcp" 2>/dev/null || true
-    done
+    # Best-effort: extract :port substring from each endpoint URL and free it.
+    if [ -f configs/endpoints.txt ]; then
+        while IFS= read -r url; do
+            [[ -z "$url" || "$url" =~ ^# ]] && continue
+            port=$(echo "$url" | sed -nE 's#.*:([0-9]+).*#\1#p')
+            [ -n "$port" ] && fuser -k "$port/tcp" 2>/dev/null || true
+        done < configs/endpoints.txt
+    fi
     wait 2>/dev/null || true
     echo "[cleanup] Done."
 }
@@ -50,25 +54,38 @@ bash scripts/serve_vllm_multi.sh &
 VLLM_PIDS+=($!)
 echo "[$(timestamp)] vLLM starting in background (PID: ${VLLM_PIDS[-1]})"
 
-# Step 4: Wait for all endpoints to be healthy
+# Step 4: Wait for all endpoints listed in configs/endpoints.txt to be healthy
+# (Source of truth = configs/endpoints.txt — same file the pipeline itself reads.
+# Previously this loop hardcoded ports 8000-8015, which mismatched the default
+# 4-endpoint config in serve_vllm_multi.sh and caused multi-hour timeout
+# failures on default-config first runs.)
 echo ""
 echo "[$(timestamp)] Step 4/7: Waiting for endpoints to be ready..."
-PER_PORT_MAX_WAIT=600  # 10 minutes per port (vLLM cold start can be slow)
-for port in $(seq 8000 8015); do
-    echo -n "  Waiting for port $port..."
+PER_PORT_MAX_WAIT=600  # 10 minutes per endpoint (vLLM cold start can be slow)
+ENDPOINTS=()
+while IFS= read -r url; do
+    [[ -z "$url" || "$url" =~ ^# ]] && continue
+    ENDPOINTS+=("$url")
+done < configs/endpoints.txt
+if [ ${#ENDPOINTS[@]} -eq 0 ]; then
+    echo "ERROR: no active endpoints in configs/endpoints.txt"
+    exit 1
+fi
+for url in "${ENDPOINTS[@]}"; do
+    echo -n "  Waiting for $url..."
     waited=0
-    until curl -sf "http://localhost:$port/v1/models" > /dev/null 2>&1; do
+    until curl -sf "$url/models" > /dev/null 2>&1; do
         sleep 5
         waited=$((waited + 5))
         if [ "$waited" -ge "$PER_PORT_MAX_WAIT" ]; then
             echo " TIMEOUT after ${PER_PORT_MAX_WAIT}s"
-            echo "ERROR: Endpoint on port $port did not start. Check vllm logs."
+            echo "ERROR: $url did not become ready. Check vllm logs."
             exit 1
         fi
     done
     echo " OK (${waited}s)"
 done
-echo "[$(timestamp)] All 16 endpoints ready."
+echo "[$(timestamp)] All ${#ENDPOINTS[@]} endpoint(s) ready."
 
 # Step 5: Run Evolution (5 iterations)
 echo ""
