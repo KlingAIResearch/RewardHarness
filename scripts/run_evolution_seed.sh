@@ -25,8 +25,8 @@ model:
   dtype: bfloat16
   gpu_memory_utilization: 0.85
 
-claude:
-  model: claude-sonnet-4-6
+gemini:
+  model: gemini-3.1-pro-preview
 
 evolution:
   train_dataset: AgPerry/EditReward-Data-100
