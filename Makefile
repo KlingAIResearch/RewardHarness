@@ -45,8 +45,12 @@ evolve:
 
 benchmark:
 	python scripts/run_benchmark.py \
-	  --config configs/default.yaml \
-	  --library-dir examples/seed_library
+	  --config configs/default.yaml
+# Defaults to the paper-evolved library shipped at src/library/ (~45.7% /
+# 47.4% on EditReward-Bench + GenAI-Bench depending on Sub-Agent). To
+# benchmark a different library — e.g. one you evolved yourself or the
+# small examples/seed_library/ — call run_benchmark.py directly with
+# --library-dir <path>.
 
 reproduce:
 	bash scripts/reproduce.sh
