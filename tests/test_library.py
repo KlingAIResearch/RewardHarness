@@ -121,6 +121,32 @@ class TestLibraryTools:
         assert result["confidence"] == 0.95
         mock_vllm_client.chat.completions.create.assert_called_once()
 
+    def test_call_tool_honours_subagent_model_override(self, tmp_library, mock_vllm_client):
+        """Tool dispatch passes src.library.SUBAGENT_MODEL as the vLLM model id.
+
+        Regression guard: REWARDHARNESS_SUBAGENT_MODEL must propagate from
+        sub_agent through library/__init__.py to the actual chat.completions
+        call, so VLM-swap configurations don't break inside <tool> blocks."""
+        lib = Library(str(tmp_library))
+        lib.add_tool(
+            "tool-ocr", "Extract text",
+            "You are an OCR tool. Return JSON.",
+            {"images": "list"}, {"text": "str"},
+            "## OCR"
+        )
+        mock_pool = MagicMock()
+        mock_pool.next.return_value = "http://localhost:8000/v1"
+        mock_vllm_client.chat.completions.create.return_value.choices[0].message.content = \
+            json.dumps({"text": "ok"})
+
+        with patch("src.library.SUBAGENT_MODEL", "my-org/my-vlm-7b"), \
+             patch("src.library.openai.OpenAI", return_value=mock_vllm_client):
+            lib.call_tool("tool-ocr", {"images": ["b64"], "query": "read"}, mock_pool)
+
+        # Every call to chat.completions.create must carry the patched model
+        for created_call in mock_vllm_client.chat.completions.create.call_args_list:
+            assert created_call.kwargs["model"] == "my-org/my-vlm-7b"
+
 
 class TestLibraryShared:
     def test_empty_library_summaries(self, tmp_library):

@@ -564,6 +564,35 @@ class TestEvolverApplySignals:
         })
         assert applied["skills_deleted"] == 0
 
+    def test_validate_tool_prompt_honours_subagent_model(self, library_on_disk):
+        """_validate_tool_prompt passes src.evolver.SUBAGENT_MODEL as the model id.
+
+        Regression guard mirroring tests/test_sub_agent.py and
+        tests/test_library.py — REWARDHARNESS_SUBAGENT_MODEL must propagate
+        to Phase B's tool-prompt validation step, otherwise every new Tool
+        proposal in a VLM-swapped setup fails with 'model not found'."""
+        mock_pool = MagicMock()
+        mock_pool.next.return_value = "http://localhost:8000/v1"
+
+        # All test samples return valid JSON → success rate 100%, exits round 0
+        mock_client = MagicMock()
+        mock_client.chat.completions.create.return_value.choices = [MagicMock()]
+        mock_client.chat.completions.create.return_value.choices[0].message.content = '{"ok": true}'
+
+        evolver = Evolver(library_on_disk, endpoint_pool=mock_pool)
+        with patch("src.evolver.SUBAGENT_MODEL", "my-org/my-vlm-7b"), \
+             patch("src.evolver.OpenAI", return_value=mock_client):
+            evolver._validate_tool_prompt(
+                name="tool-x", description="d",
+                system_prompt="sp",
+                min_samples=2, max_refinement_rounds=1,
+            )
+
+        # Every chat.completions.create call must carry the patched model
+        assert mock_client.chat.completions.create.call_count >= 1
+        for created_call in mock_client.chat.completions.create.call_args_list:
+            assert created_call.kwargs["model"] == "my-org/my-vlm-7b"
+
 
 # ---------------------------------------------------------------------------
 # End-to-end integration: ChainAnalyzer -> Evolver -> Disk
