@@ -147,6 +147,29 @@ class TestSubAgent:
 
         assert result["preference"] == "A"
 
+    def test_subagent_model_override(self, sub_agent):
+        """The model id sent to vLLM is read from src.sub_agent.SUBAGENT_MODEL,
+        which itself is sourced from $REWARDHARNESS_SUBAGENT_MODEL at import time."""
+        answer_json = json.dumps({
+            "preference": "A",
+            "score_A_instruction": 3, "score_A_quality": 3,
+            "score_B_instruction": 2, "score_B_quality": 2,
+            "reasoning": "A"
+        })
+
+        with patch("src.sub_agent.SUBAGENT_MODEL", "my-org/my-vlm-7b"), \
+             patch("src.sub_agent.OpenAI") as MockVLLM:
+            mock_vllm = MagicMock()
+            mock_vllm.chat.completions.create.return_value.choices = [MagicMock()]
+            mock_vllm.chat.completions.create.return_value.choices[0].message.content = f'<answer>{answer_json}</answer>'
+            MockVLLM.return_value = mock_vllm
+
+            sub_agent.evaluate("src", "a", "b", "test", "")
+
+        # The model kwarg on every chat.completions.create call must reflect the patched constant
+        for created_call in mock_vllm.chat.completions.create.call_args_list:
+            assert created_call.kwargs["model"] == "my-org/my-vlm-7b"
+
     def test_tool_failure_returns_error_obs(self, sub_agent, mock_library):
         """When tool call fails, error is returned as <obs>."""
         mock_library.add_tool("tool-fail", "Fail", "fail prompt", {}, {}, "## Fail")
