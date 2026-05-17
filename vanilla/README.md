@@ -17,7 +17,15 @@ Scripts that benchmark **off-the-shelf VLMs without any Skills/Tools library** â
 
 ## Running
 
-Each script takes a `--model` flag and an output JSON path. They expect the same `GOOGLE_APPLICATION_CREDENTIALS` / `GEMINI_PROJECT` env vars as the main pipeline (Gemini scripts), or a Claude-compatible base URL (`bench_claude.py`). The `gemini_bench_*.py` variants also read `GEMINI_GATEWAY_BASE_URL` and `GEMINI_GATEWAY_API_KEY` if you're routing through a hosted gateway instead of direct Vertex AI.
+Each script takes a `--model` flag and an output JSON path.
+
+| Backend | Auth env vars |
+|---|---|
+| Gemini direct (default for `gemini_bench_*.py`) | `GOOGLE_APPLICATION_CREDENTIALS`, `GEMINI_PROJECT` |
+| Gemini via hosted gateway (`gemini_bench_*.py`) | `GEMINI_GATEWAY_BASE_URL`, `GEMINI_GATEWAY_API_KEY` |
+| Claude via OpenAI-compatible proxy (`bench_*.py`) | `CLAUDE_API_BASE_URL`, `CLAUDE_API_KEY` |
+
+If `CLAUDE_API_BASE_URL` / `CLAUDE_API_KEY` are unset, `bench_*.py` falls back to a localhost demo proxy that is unlikely to exist on your machine &mdash; set the two env vars to point at any OpenAI-compatible Claude endpoint (e.g. LiteLLM, an Anthropic-bridge gateway, or your own proxy).
 
 Example:
 

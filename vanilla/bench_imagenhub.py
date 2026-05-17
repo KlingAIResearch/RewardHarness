@@ -31,8 +31,8 @@ from PIL import Image
 from scipy.stats import spearmanr
 from tqdm import tqdm
 
-BASE_URL = "http://localhost:8317/v1"
-API_KEY = "demo"
+BASE_URL = os.environ.get("CLAUDE_API_BASE_URL", "http://localhost:8317/v1")
+API_KEY = os.environ.get("CLAUDE_API_KEY", "demo")
 
 MUSEUM_BASE = "https://chromaica.github.io/Museum/ImagenHub_Text-Guided_IE"
 

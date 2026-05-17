@@ -21,8 +21,8 @@ from datasets import load_dataset
 from openai import OpenAI
 from tqdm import tqdm
 
-BASE_URL = "http://localhost:8317/v1"
-API_KEY = "demo"
+BASE_URL = os.environ.get("CLAUDE_API_BASE_URL", "http://localhost:8317/v1")
+API_KEY = os.environ.get("CLAUDE_API_KEY", "demo")
 
 # GenAI-Bench official pairwise template for image_edition
 SYSTEM_PROMPT = """Please act as an impartial judge and a professional digital artist to evaluate the quality of the responses provided by two AI image edition models to the user inputs displayed below. You will be given model A's edited image and model B's edited image. Your job is to evaluate which assistant's edited image is better.

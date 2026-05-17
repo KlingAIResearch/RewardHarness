@@ -24,8 +24,8 @@ from datasets import load_dataset
 from openai import OpenAI
 from tqdm import tqdm
 
-BASE_URL = "http://localhost:8317/v1"
-API_KEY = "demo"
+BASE_URL = os.environ.get("CLAUDE_API_BASE_URL", "http://localhost:8317/v1")
+API_KEY = os.environ.get("CLAUDE_API_KEY", "demo")
 
 SYSTEM_PROMPT = """You are an expert image editing quality evaluator. You will compare two edited images (A and B) produced from the same source image following an editing instruction.
 
