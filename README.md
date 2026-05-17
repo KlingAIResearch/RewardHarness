@@ -178,13 +178,16 @@ python scripts/run_benchmark.py \
 ## Key config (`configs/default.yaml`)
 
 ```yaml
-model:                                 # Sub-Agent (vLLM)
+# model: section is informational only — no code reads it.
+# Serving knobs come from env vars consumed by scripts/serve_vllm_multi.sh
+# (GPU_MEM, NUM_GPUS, ENDPOINTS_PER_GPU, …). See .env.example.
+model:                                 # Sub-Agent (vLLM) — INFORMATIONAL
   name: Qwen2.5-VL-7B-Instruct
   path: Qwen/Qwen2.5-VL-7B-Instruct    # HF repo id or local path
   max_model_len: 16384                 # context window
   limit_mm_per_prompt_image: 5         # max images per call
   dtype: bfloat16
-  gpu_memory_utilization: 0.85         # lower if you hit OOM
+  gpu_memory_utilization: 0.85         # to lower this, export GPU_MEM=0.6
 
 gemini:                                # Orchestrator
   model: gemini-3.1-pro-preview        # 3.1 only — do NOT downgrade to 2.5

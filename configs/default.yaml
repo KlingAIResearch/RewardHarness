@@ -1,3 +1,8 @@
+# The `model:` block below is INFORMATIONAL — it documents the paper's vLLM
+# config. None of these keys are read by the pipeline; they are the values
+# scripts/serve_vllm_multi.sh launches vLLM with via env vars (NUM_GPUS,
+# ENDPOINTS_PER_GPU, GPU_MEM, MAX_MODEL_LEN, VLLM_MODEL_PATH — see .env.example).
+# Changing values here does NOT affect serving; export the matching env var.
 model:
   name: Qwen2.5-VL-7B-Instruct
   path: Qwen/Qwen2.5-VL-7B-Instruct
