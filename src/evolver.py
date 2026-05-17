@@ -12,6 +12,7 @@ import logging
 from openai import OpenAI
 
 from src.gemini_client import call_gemini
+from src.sub_agent import SUBAGENT_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +125,7 @@ class Evolver:
                     client = OpenAI(base_url=endpoint, api_key="token")
                     # Use a simple test query
                     resp = client.chat.completions.create(
-                        model="Qwen2.5-VL-7B-Instruct",
+                        model=SUBAGENT_MODEL,
                         messages=[
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": [
