@@ -150,10 +150,15 @@ make check         # or: python scripts/check_env.py
 python -m pytest tests/ -v
 
 # Run evolution (main experiment) — Phase A/B/C loop on ~100 demos
+# At end-of-run it prints `Best iteration: N (val_acc=X) → benchmark with
+# --library-dir results/my_run/checkpoints/iter_N`; copy that verbatim into
+# the benchmark step below to evaluate the right checkpoint.
 python scripts/run_evolution.py \
   --config configs/default.yaml \
   --results-dir results/my_run/ \
   --max-iters 200
+# If the run dies mid-iteration, re-run the same command with --resume
+# to pick up from the last checkpoint instead of restarting from baseline.
 
 # Read-only benchmark (K=2/3/4 accuracy on EditReward-Bench)
 python scripts/run_benchmark.py --config configs/default.yaml
