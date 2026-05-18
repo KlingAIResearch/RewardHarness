@@ -128,7 +128,15 @@ def check_endpoints(endpoints_path: str, timeout: float = 3.0) -> bool:
     if not urls:
         print(f"  [{WARN}] no endpoints listed in {endpoints_path}")
         return True
-    expected_model = os.environ.get("REWARDHARNESS_SUBAGENT_MODEL", "Qwen2.5-VL-7B-Instruct")
+    # Import the canonical constant so this script's "expected" stays in
+    # lockstep with src.sub_agent.SUBAGENT_MODEL (already env-var-aware).
+    # Resolved lazily so check_env.py keeps working even if src/ isn't on
+    # the path (e.g. running this from outside the repo root).
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from src.sub_agent import SUBAGENT_MODEL as expected_model
+    except ImportError:
+        expected_model = os.environ.get("REWARDHARNESS_SUBAGENT_MODEL", "Qwen2.5-VL-7B-Instruct")
     # Probe in parallel so 16 unreachable endpoints take ~timeout, not 16*timeout.
     ok_count = 0
     served_mismatch = []
