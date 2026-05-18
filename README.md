@@ -247,7 +247,7 @@ RewardHarness/
 
 ## Walkthrough
 
-New here? [`WALKTHROUGH.md`](WALKTHROUGH.md) is the numbered checklist from `git clone` to your first preference judgment (~15 min for CPU-only inspection, ~30 min plus serving time for a full demo).
+New here? [`WALKTHROUGH.md`](WALKTHROUGH.md) is the numbered checklist from `git clone` to your first preference judgment (~15 min for CPU-only inspection, then ~3 min of pipeline work for `make demo` once vLLM is serving &mdash; the first-time vLLM cold-start dominates).
 
 ## Output artifacts
 

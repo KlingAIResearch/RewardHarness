@@ -1,6 +1,6 @@
 # Walkthrough — from `git clone` to your first preference judgment
 
-This walkthrough takes ~15 minutes if you only want to inspect the library and run the tests, and ~30 minutes (plus model-serving time) for a full `make demo` evolution pass. Each step is independent — feel free to stop after step 3 if you only want to understand the codebase.
+This walkthrough takes ~15 minutes if you only want to inspect the library and run the tests, and an additional ~3 minutes of pipeline work for a full `make demo` evolution pass — though vLLM cold-start can add 5&ndash;15 minutes the first time the model loads. Each step is independent — feel free to stop after step 3 if you only want to understand the codebase.
 
 ---
 
