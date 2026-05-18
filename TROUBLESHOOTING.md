@@ -89,6 +89,20 @@ GPU_MEM=0.6 bash scripts/serve_vllm_multi.sh
 **Endpoints listed in `configs/endpoints.txt` but pipeline says "0 available"**
 The Sub-Agent picks endpoints round-robin and removes any that fail a health check. Re-run the health probe in `scripts/reproduce.sh` step 4 to see which ports are responding.
 
+**`openai.NotFoundError: Error code: 404 - model 'my-vlm' not found`** (or similar)
+Mismatch between what the **client** asks for and what the vLLM **server** is serving. The Sub-Agent reads `REWARDHARNESS_SUBAGENT_MODEL` (default `Qwen2.5-VL-7B-Instruct`); the server's identifier is whatever `--served-model-name` was passed to `vllm.entrypoints.openai.api_server`. Both must match:
+
+```bash
+# Client side (what the pipeline asks for)
+export REWARDHARNESS_SUBAGENT_MODEL="my-vlm"
+
+# Server side — start vLLM with the same id
+REWARDHARNESS_SUBAGENT_MODEL=my-vlm VLLM_MODEL_PATH=my-org/my-vlm \
+    bash scripts/serve_vllm_multi.sh
+```
+
+Confirm by curling `/v1/models` and matching `data[0].id` against `$REWARDHARNESS_SUBAGENT_MODEL`. See README §"Swapping in a different VLM as Sub-Agent".
+
 ---
 
 ## Datasets
