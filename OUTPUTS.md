@@ -35,27 +35,35 @@ A JSON array. One entry per iteration. Schema:
     "train_acc": 0.4500,
     "val_acc": 0.4250,
     "best_val_acc": 0.4250,
-    "action": "baseline",        // baseline | keep | rollback
-    "skill_action": "skip",      // skip | keep | rollback (Phase A)
-    "tool_action": "skip",       // skip | keep | rollback (Phase B)
+    "action": "baseline",          // baseline | keep | rollback
+    "skill_action": "skip",        // skip | keep | rollback (Phase A)
+    "tool_action": "skip",         // skip | keep | rollback (Phase B)
     "val_acc_after_skills": null,
     "val_acc_after_tools": null,
     "n_skills": 0,
-    "n_tools": 0
+    "n_tools": 0,
+    "duration_s": 30.2             // wall-clock per iter, in seconds
   },
   {
     "iteration": 1,
     "train_acc": 0.5167,
-    "val_acc": 0.5000,           // val_acc after BOTH phases
-    "prev_val_acc": 0.4250,      // running best at start of this iter
+    "val_acc": 0.5000,             // val_acc after BOTH phases
+    "prev_val_acc": 0.4250,        // running best at start of this iter
     "best_val_acc": 0.5000,
     "action": "keep",
     "skill_action": "keep",
-    "tool_action": "rollback",   // Phase B rolled back; only Phase A stuck
+    "tool_action": "rollback",     // Phase B rolled back; only Phase A stuck
     "val_acc_after_skills": 0.5000,
     "val_acc_after_tools": 0.4750,
+    "applied": {                   // counts of changes the Evolver applied this iter
+      "skills_added": 1, "skills_updated": 0, "skills_deleted": 0,
+      "tools_added": 0, "tools_updated": 1, "tools_deleted": 0
+    },
+    "analysis_summary": "Sub-Agent missed OCR failures in 3/12 examples; …",
+    "pruned": [],                  // entries removed by Phase-C periodic pruning (mostly empty)
     "n_skills": 1,
-    "n_tools": 0
+    "n_tools": 0,
+    "duration_s": 124.5
   }
   // …
 ]
