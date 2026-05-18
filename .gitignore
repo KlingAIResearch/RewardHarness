@@ -19,9 +19,10 @@ build/
 
 # Experiment outputs (large; not in public release)
 results/
-results_new/
 runs/
 checkpoints/
+slurm-*.out          # Slurm default per-job stdout (sbatch_vllm.sh)
+vllm-slurm-*.log     # Slurm wrapper logs (see scripts/sbatch_vllm.sh #SBATCH --output)
 *.zip
 *.tar.gz
 
