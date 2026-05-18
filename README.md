@@ -44,6 +44,8 @@ Read [`WALKTHROUGH.md`](WALKTHROUGH.md) for the 9-step path from `git clone` to 
 - **2026-05-15** — `v0.1.0` initial open-source release at [`TIGER-AI-Lab/RewardHarness`](https://github.com/TIGER-AI-Lab/RewardHarness); paper featured on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.08703).
 - **2026-05-09** — Paper on arXiv: [2605.08703](https://arxiv.org/abs/2605.08703).
 
+For commit-level detail of post-`v0.1.2` polish (env-var coverage for VLM swaps, reproducibility fixes, doc honesty pass, …) see [`CHANGELOG.md`](CHANGELOG.md) `[Unreleased]`.
+
 ## Datasets
 
 | Dataset | Use | Hub |
