@@ -117,14 +117,21 @@ Set `HF_TOKEN` or run `huggingface-cli login` with a token that has read access.
 
 ## Evolution
 
-**`AssertionError: validation accuracy not strictly monotonic`**
-Expected — many proposed updates roll back. The Library is gated on `>= prev - explore_margin` (default `0.075`), and the *best* checkpoint is selected post-hoc from `results/<run>/checkpoints/`, not the final iteration.
+**val_acc fluctuates between iterations — should I worry?**
+No. Many proposed updates land and roll back. The Library is gated on `val_acc >= prev_val_acc - explore_margin` (default `0.075` in `configs/default.yaml`), so small dips are allowed on purpose to escape local minima. Catastrophic regressions roll back. The *best* checkpoint is the iteration with the highest `val_acc`, which `scripts/run_evolution.py` automatically surfaces at end-of-run:
+
+```
+Best iteration: 4 (val_acc=0.6000)  →  benchmark with
+  --library-dir results/<run>/checkpoints/iter_4
+```
+
+Copy that command verbatim into `make benchmark` / `python scripts/run_benchmark.py` to evaluate the right checkpoint.
 
 **10+ consecutive rollbacks during a run**
 Usually means the Sub-Agent is producing unparseable outputs (vLLM endpoint flaking, or wrong prompt template). Check `results/<run>/evolution_log.json` for the last successful action and inspect the reasoning chain.
 
 **Run dies mid-iteration**
-The pipeline is checkpoint-resumable. Re-run the same `run_evolution.py` command — it'll pick up from the last completed iteration.
+The pipeline is checkpoint-resumable. Re-run the same `run_evolution.py` command with `--resume` — it'll pick up from the last completed iteration.
 
 ---
 
