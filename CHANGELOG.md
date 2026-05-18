@@ -16,6 +16,7 @@ Post-v0.1.2 polish, slated for v0.1.3:
 - `REWARDHARNESS_SUBAGENT_MODEL` env var lets you swap in a non-Qwen OpenAI-compatible Sub-Agent without editing source. Honoured by **every** vLLM call site — `SubAgent._call_vllm`, `Library.call_tool`, `Evolver._validate_tool_prompt`, plus the server-side launchers `serve_vllm_multi.sh`, `_launch_all_vllm.sh`, `sbatch_vllm.sh`, and `start_vllm_remote.sh` — so VLM-swap setups are coherent end-to-end.
 - `CLAUDE_API_BASE_URL` / `CLAUDE_API_KEY` env vars in `vanilla/bench_{claude,genaibench,imagenhub}.py`. Previously the URL was hardcoded to a dead internal proxy, so the Claude baselines were not reproducible without editing source.
 - `.env.example` now lists every env var the code reads (13 new entries) &mdash; `REWARDHARNESS_SUBAGENT_MODEL`, the `serve_vllm_multi.sh` knobs (`NUM_GPUS`, `ENDPOINTS_PER_GPU`, `BASE_PORT`, `GPU_MEM`, `MAX_MODEL_LEN`, `VLLM_MODEL_PATH`), BCM cluster overrides (`RH_SKIP_ENV_PIN`, `SLURM_PREFIX`, `CUDA_LIBS`), Gemini gateway pair, Claude proxy pair. WALKTHROUGH step 4 (`cp .env.example .env`) is now a one-stop discovery mechanism.
+- `scripts/run_evolution.py` end-of-run summary now surfaces the **best iteration** (highest `val_acc`) with a copy-paste-ready `--library-dir results/<run>/checkpoints/iter_N` hint, matching OUTPUTS.md's "pick the best post-hoc" guidance.
 
 ### Changed
 
@@ -64,6 +65,9 @@ Post-v0.1.2 polish, slated for v0.1.3:
 - `tests/` &mdash; added regression coverage for `REWARDHARNESS_SUBAGENT_MODEL` on all three vLLM call sites (`SubAgent`, `Library.call_tool`, `Evolver._validate_tool_prompt`); a future refactor that re-hardcodes the model id will now fail a test. Suite grew from 100 → 103 tests, still ~2 s.
 - Website `script.js` dark-mode-toggle no longer wipes the inline SVG sun/moon icons with a Unicode entity on the first call &mdash; the CSS-based icon swap (already shipped) now works as designed.
 - Website gallery click-to-enlarge actually works now. The lightbox handler in `script.js` was looking for a `.gallery-placeholder` child of `.gallery-item` that doesn't exist in the current Figure-4 markup (only an `<img>`), so clicks silently did nothing despite the subtitle's "click to enlarge" promise. Now falls back to cloning the `<img>` directly.
+- `examples/score_pair.py` docstring now points at `REWARDHARNESS_SUBAGENT_MODEL` for non-Qwen swaps (was undiscoverable from the file new users read first).
+- `OUTPUTS.md` + `examples/sample_benchmark_results.json` now honestly distinguish keys `scripts/run_benchmark.py` writes (`k2`/`k3`/`k4` with `n_pairs` + `pair_results`) from paper-headline-only fields (`genai_bench`, `average`) that require a separate GenAI-Bench pass. Includes a one-line `jq` merge recipe.
+- `scripts/run_all_benchmarks.sh` summary table now renders `—` (em-dash) for missing GenAI/Avg keys instead of `0.0000`, since `run_benchmark.py` doesn't produce them by default — previously the table lied about scores it didn't have.
 
 ## [0.1.2] — 2026-05-16
 
