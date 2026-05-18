@@ -60,6 +60,8 @@ def main():
     print("\n" + "=" * 60)
     print("Evolution Summary")
     print("=" * 60)
+    best_iter = None
+    best_val = -1.0
     for entry in evolution_log:
         i = entry["iteration"]
         action = entry.get("action", "")
@@ -69,7 +71,15 @@ def main():
         n_tools = entry.get("n_tools", 0)
         print(f"  Iter {i}: train={train_acc:.4f}  val={val_acc:.4f}  "
               f"action={action}  skills={n_skills}  tools={n_tools}")
+        if val_acc > best_val:
+            best_val = val_acc
+            best_iter = i
     print("=" * 60)
+    if best_iter is not None:
+        # OUTPUTS.md tells users to pick the best checkpoint post-hoc;
+        # surface it here so they don't have to grep evolution_log.json.
+        print(f"Best iteration: {best_iter} (val_acc={best_val:.4f})  →  "
+              f"benchmark with --library-dir results/<run>/checkpoints/iter_{best_iter}")
 
     results_dir = args.results_dir or os.path.join(PROJECT_ROOT, "results")
     results_path = os.path.join(results_dir, "evolution_log.json")
