@@ -19,6 +19,13 @@ Required env vars (see .env.example):
     GOOGLE_APPLICATION_CREDENTIALS, GEMINI_PROJECT
     plus a vLLM endpoint listed in configs/endpoints.txt (Qwen2.5-VL-7B-Instruct)
 
+Optional:
+    REWARDHARNESS_SUBAGENT_MODEL  override the served model id sent to vLLM
+                                  (defaults to Qwen2.5-VL-7B-Instruct).
+                                  Useful when running against a non-Qwen
+                                  OpenAI-compatible endpoint — see README
+                                  §"Swapping in a different VLM as Sub-Agent".
+
 Returns the same dict shape `scripts/run_benchmark.py` consumes:
     {
       "preference": "A" | "B" | "tie",
