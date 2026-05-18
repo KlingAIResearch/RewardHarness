@@ -102,7 +102,7 @@ You don't have to run evolution first &mdash; `src/library/` ships with the pape
 python scripts/run_benchmark.py --config configs/default.yaml
 ```
 
-That reports K=2/3/4 accuracy on EditReward-Bench and a single number on GenAI-Bench, using the entries committed at `src/library/`. With the paper's evolved Library this lands at **45.7%** average (Qwen Sub-Agent) or **47.4%** (Gemini-2.0-Flash Sub-Agent).
+That reports K=2/3/4 group accuracy on EditReward-Bench using the entries committed at `src/library/`. The paper's **45.7%** average (Qwen Sub-Agent) and **47.4%** (Gemini-2.0-Flash Sub-Agent) headline numbers also include a separate GenAI-Bench pass; see [`OUTPUTS.md`](OUTPUTS.md#after-make-benchmark--scriptsrun_benchmarkpy) for the schema and the `jq` recipe to merge results from both passes.
 
 To benchmark *your own* evolved Library from a prior run instead:
 
