@@ -47,11 +47,23 @@ for doc in "${DOCS[@]}"; do
   if [ "$CHECK_EXTERNAL" = "1" ]; then
     while IFS= read -r url; do
       [ -z "$url" ] && continue
-      code=$(curl -fsS --max-time 8 -o /dev/null -w "%{http_code}" -L "$url" 2>/dev/null || echo "ERR")
-      if [ "$code" != "200" ] && [ "$code" != "302" ]; then
-        echo "  HTTP $code  $doc -> $url"
-        broken=$((broken + 1))
+      # Skip URLs that are documentation examples, not real endpoints to validate:
+      #   - http://localhost:* or http://127.0.0.1:* (sample curl commands)
+      #   - example.com (placeholder in env-var defaults)
+      if [[ "$url" =~ ^https?://(localhost|127\.0\.0\.1)([:/]|$) ]] || [[ "$url" =~ example\.com ]]; then
+        continue
       fi
+      # Drop -f so curl still emits %{http_code} on 4xx/5xx (otherwise we
+      # get "429ERR" because || echo "ERR" appends to stdout). A real
+      # connection failure leaves code empty; that's caught by the case below.
+      code=$(curl -sS --max-time 8 -o /dev/null -w "%{http_code}" -L "$url" 2>/dev/null)
+      [ -z "$code" ] && code="ERR"
+      # 429 (rate-limit) means the host is up and refusing our HEAD; treat as reachable.
+      # 301 also redirects; -L follows so we usually see the final 200/302.
+      case "$code" in
+        200|301|302|307|308|429) ;;
+        *) echo "  HTTP $code  $doc -> $url"; broken=$((broken + 1)) ;;
+      esac
     done < <(grep -oE 'https?://[^)>" ]+' "$doc" 2>/dev/null | sed -E 's/[.,;]$//' | sort -u)
   fi
 done
