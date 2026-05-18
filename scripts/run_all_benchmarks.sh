@@ -42,7 +42,10 @@ echo "=== ALL BENCHMARKS COMPLETE ==="
 echo "End: $(date)"
 echo ""
 
-# Summary table — include all five scores so it's obvious which checkpoint won on `average`.
+# Summary table. K=2/3/4 are always present (run_benchmark.py writes them);
+# GenAI and Avg appear only if a separate GenAI-Bench pass was merged in
+# (see OUTPUTS.md). Missing keys render as '—' rather than 0.0000 so the
+# table doesn't lie about scores it doesn't actually have.
 echo "Iter | K=2    | K=3    | K=4    | GenAI  | Avg"
 echo "-----|--------|--------|--------|--------|--------"
 for iter_dir in "$CHECKPOINTS_DIR"/iter_*; do
@@ -52,10 +55,17 @@ for iter_dir in "$CHECKPOINTS_DIR"/iter_*; do
         $PYTHON -c "
 import json, sys
 d = json.load(open(sys.argv[1]))
-get = lambda k: d.get(k, {}).get('accuracy', 0) if isinstance(d.get(k), dict) else 0
-k2 = get('k2'); k3 = get('k3'); k4 = get('k4'); gen = get('genai_bench')
-avg = d.get('average', 0)
-print(f'  {sys.argv[2]}  | {k2:.4f} | {k3:.4f} | {k4:.4f} | {gen:.4f} | {avg:.4f}')
+def fmt(key, top=False):
+    v = d.get(key) if top else (d.get(key, {}) or {}).get('accuracy')
+    if v is None:
+        return '   —   '
+    return f'{v:.4f}'
+def acc(key):
+    sub = d.get(key)
+    if isinstance(sub, dict) and 'accuracy' in sub:
+        return f\"{sub['accuracy']:.4f}\"
+    return '   —   '
+print(f'  {sys.argv[2]}  | {acc(\"k2\")} | {acc(\"k3\")} | {acc(\"k4\")} | {acc(\"genai_bench\")} | {fmt(\"average\", top=True)}')
 " "$outfile" "$iter_num"
     fi
 done
