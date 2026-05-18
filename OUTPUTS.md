@@ -69,7 +69,12 @@ A JSON array. One entry per iteration. Schema:
 ]
 ```
 
-**Reading it:** `action: "rollback"` means *both* skill and tool changes were undone (library restored to the pre-iteration snapshot). `action: "keep"` means at least one phase stuck. The official "best" checkpoint is the iteration whose `best_val_acc` is highest — pick it post-hoc, not the final iter.
+**Reading it:** `action: "rollback"` means *both* skill and tool changes were undone (library restored to the pre-iteration snapshot). `action: "keep"` means at least one phase stuck. The official "best" checkpoint is the iteration whose `val_acc` is highest — pick it post-hoc, not the final iter. `scripts/run_evolution.py` prints this for you at the end of every run:
+
+```
+Best iteration: 4 (val_acc=0.6000)  →  benchmark with
+  --library-dir results/<run>/checkpoints/iter_4
+```
 
 ### `checkpoints/iter_N/`
 
