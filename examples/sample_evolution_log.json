@@ -38,9 +38,13 @@
     "tool_action": "keep",
     "val_acc_after_skills": 0.5250,
     "val_acc_after_tools": 0.5500,
+    "applied": {"skills_added": 1, "skills_updated": 0, "skills_deleted": 0, "tools_added": 1, "tools_updated": 0, "tools_deleted": 0},
+    "analysis_summary": "Sub-Agent missed OCR-style failures in 3/12 train examples; proposing a text-and-ocr-analyzer Tool to surface spelling errors.",
+    "pruned": [],
+    "duration_s": 124.5,
     "n_skills": 2,
     "n_tools": 1,
-    "_comment": "skill 'instruction-following-completeness' + tool 'text-and-ocr-analyzer' both stick"
+    "_comment": "skill 'instruction-following-completeness' + tool 'text-and-ocr-analyzer' both stick. Real evolution_log.json always carries `applied` / `analysis_summary` / `pruned` / `duration_s` on every non-baseline iter — only this iter is shown with them for compactness."
   },
   {
     "iteration": 3,
