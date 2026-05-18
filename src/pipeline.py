@@ -355,6 +355,11 @@ class SelfEvolutionPipeline:
                 if os.path.exists(log_path):
                     with open(log_path) as f:
                         evolution_log = json.load(f)
+            else:
+                logger.warning(
+                    f"--resume requested but no checkpoints found under {self.checkpoint_dir!r}; "
+                    f"starting from iter 0 (baseline)"
+                )
 
         for iteration in range(start_iter, n_iterations):
             logger.info(f"\n{'='*60}")
