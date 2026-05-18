@@ -122,6 +122,14 @@ make reproduce
 
 End-to-end: env setup → dataset download → vLLM serve → 5-iteration evolution → EditReward-Bench K=2/3/4 → print results. Needs ≥4 GPUs and ~4–6 hours. See `scripts/reproduce.sh` for the step list.
 
+**If `make reproduce` dies partway through** (cluster preemption, vLLM crash, OOM): the evolution step is checkpoint-resumable. Skip the env+serve steps by hand and resume directly:
+
+```bash
+python scripts/run_evolution.py --config configs/default.yaml --resume
+```
+
+Then continue with `python scripts/run_benchmark.py --config configs/default.yaml`.
+
 **To match the paper's full 47.4% / 45.7% headline**, also run a GenAI-Bench pass after `make reproduce` finishes and merge the two outputs &mdash; see [`OUTPUTS.md`](OUTPUTS.md#after-make-benchmark--scriptsrun_benchmarkpy) for the merge recipe. The paper headline is the mean of K=2, K=3, K=4, and GenAI-Bench accuracies.
 
 ---
