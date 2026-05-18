@@ -39,9 +39,9 @@ Read [`WALKTHROUGH.md`](WALKTHROUGH.md) for the 9-step path from `git clone` to 
 
 ## Updates
 
-- **2026-05-16** — Code mirrored at [`KlingAIResearch/RewardHarness`](https://github.com/KlingAIResearch/RewardHarness); both repos kept in sync.
-- **2026-05-15** — Paper featured on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.08703).
-- **2026-05-14** — Initial open-source release at [`TIGER-AI-Lab/RewardHarness`](https://github.com/TIGER-AI-Lab/RewardHarness).
+- **2026-05-16** — `v0.1.2` released (smallest-end-to-end `examples/score_pair.py`, CI scaffolding, packaging fixes). Code also mirrored at [`KlingAIResearch/RewardHarness`](https://github.com/KlingAIResearch/RewardHarness); both repos kept in sync.
+- **2026-05-16** — `v0.1.1` security patch (rotated and removed a hardcoded internal API key inadvertently shipped in `v0.1.0`; see [SECURITY.md](SECURITY.md)).
+- **2026-05-15** — `v0.1.0` initial open-source release at [`TIGER-AI-Lab/RewardHarness`](https://github.com/TIGER-AI-Lab/RewardHarness); paper featured on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.08703).
 - **2026-05-09** — Paper on arXiv: [2605.08703](https://arxiv.org/abs/2605.08703).
 
 ## Datasets
