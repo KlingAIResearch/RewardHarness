@@ -46,9 +46,11 @@ evolve:
 benchmark:
 	python scripts/run_benchmark.py \
 	  --config configs/default.yaml
-# Defaults to the paper-evolved library shipped at src/library/ (~45.7% /
-# 47.4% on EditReward-Bench + GenAI-Bench depending on Sub-Agent). To
-# benchmark a different library — e.g. one you evolved yourself or the
+# Defaults to the paper-evolved library shipped at src/library/ and reports
+# K=2/3/4 accuracy on EditReward-Bench. The paper's headline 45.7% / 47.4%
+# average is mean(K=2, K=3, K=4, GenAI-Bench) — for the GenAI-Bench column
+# you need a separate eval pass (see OUTPUTS.md §"After make benchmark").
+# To benchmark a different library — e.g. one you evolved yourself or the
 # small examples/seed_library/ — call run_benchmark.py directly with
 # --library-dir <path>.
 
