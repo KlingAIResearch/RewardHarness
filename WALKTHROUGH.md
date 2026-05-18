@@ -79,12 +79,14 @@ pip install -r requirements-vllm.txt
 bash scripts/serve_vllm_multi.sh
 ```
 
-By default this launches one vLLM endpoint per GPU on ports 8000+. Edit `configs/endpoints.txt` if you have a different layout. Verify with:
+By default this launches one vLLM endpoint per GPU on ports 8000+ (configurable via `NUM_GPUS`, `BASE_PORT`, `GPU_MEM`, …; see [`.env.example`](.env.example)). Edit `configs/endpoints.txt` if you have a different layout. Verify with:
 
 ```bash
 curl -s http://localhost:8000/v1/models | jq .data[0].id
-# → "Qwen/Qwen2.5-VL-7B-Instruct"
+# → "Qwen2.5-VL-7B-Instruct"
 ```
+
+(That's `--served-model-name` from `serve_vllm_multi.sh`, *not* the HuggingFace path `Qwen/Qwen2.5-VL-7B-Instruct`.) To swap in a different OpenAI-compatible VLM, set `REWARDHARNESS_SUBAGENT_MODEL` before serving and the rest of the pipeline picks it up &mdash; see README §"Swapping in a different VLM as Sub-Agent".
 
 ## 7. One-iteration smoke test
 
