@@ -20,6 +20,19 @@ python examples/show_reasoning_format.py
 
 `inspect_library.py` prints a few "==>" sections (registry contents, skill markdown, round-trip assertion). `show_reasoning_format.py` prints one annotated preference judgment with the tag legend and the pipeline's parsing rules.
 
+The `score_pair.py` real-models demo needs your own source + two candidate images plus an editing prompt:
+
+```bash
+python examples/score_pair.py \
+    --source path/to/source.png \
+    --candidate-a path/to/A.png \
+    --candidate-b path/to/B.png \
+    --prompt "Add a 'Sale' sign to the storefront" \
+    --show-chain     # optional: also print the <think>/<tool>/<obs>/<answer> trace
+```
+
+It prints the resolved Sub-Agent model id and the endpoint count at startup, so a typo'd `REWARDHARNESS_SUBAGENT_MODEL` or empty `configs/endpoints.txt` is visible *before* the API call. To swap in a non-Qwen VLM, see [README §Swapping in a different VLM as Sub-Agent](../README.md#swapping-in-a-different-vlm-as-sub-agent).
+
 ## Using the seed library
 
 ```bash
