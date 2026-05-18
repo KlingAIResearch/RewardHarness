@@ -21,8 +21,9 @@ build/
 results/
 runs/
 checkpoints/
-slurm-*.out          # Slurm default per-job stdout (sbatch_vllm.sh)
-vllm-slurm-*.log     # Slurm wrapper logs (see scripts/sbatch_vllm.sh #SBATCH --output)
+# Slurm logs (sbatch_vllm.sh #SBATCH --output, plus Slurm's default-default)
+slurm-*.out
+vllm-slurm-*.log
 *.zip
 *.tar.gz
 
