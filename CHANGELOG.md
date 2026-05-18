@@ -24,6 +24,7 @@ Post-v0.1.2 polish, slated for v0.1.3:
 - README "Repository layout": `data/` row clarified (HuggingFace caches into `~/.cache/huggingface/`, not the repo's `data/` dir).
 - README "Architecture": honest description of the evolution gate &mdash; replaces "kept only if held-out accuracy improves" with the actual `explore_margin` semantics (small dips permitted within tolerance).
 - README "Key config" / `configs/default.yaml` &mdash; the `model:` block is now flagged INFORMATIONAL; no code reads those keys. Serving knobs are env vars consumed by `scripts/serve_vllm_multi.sh`.
+- README "Updates" section now lists every released version (v0.1.0 / v0.1.1 / v0.1.2) with dates that match `CHANGELOG.md` + git tags. Previously off by one day on v0.1.0 and missing the v0.1.1 security release entirely.
 - Footer on the website lists both code mirrors (TIGER-AI-Lab / KlingAIResearch).
 - Website "Method" card now describes the actual phase A/B/C structure from `src/pipeline.py` instead of a fictitious "five stages" framing.
 - Website figures now use `loading="lazy"` and `decoding="async"`, cutting first-paint bandwidth by ~820 KB for visitors who don't scroll past Abstract.
@@ -62,6 +63,7 @@ Post-v0.1.2 polish, slated for v0.1.3:
 - `.github/ISSUE_TEMPLATE/bug_report.md` &mdash; the version-collection command `pip show A B C | head -3` was silently dropping the second and third packages; switched to `grep -E '^(Name|Version)'` which surfaces all three.
 - `tests/` &mdash; added regression coverage for `REWARDHARNESS_SUBAGENT_MODEL` on all three vLLM call sites (`SubAgent`, `Library.call_tool`, `Evolver._validate_tool_prompt`); a future refactor that re-hardcodes the model id will now fail a test. Suite grew from 100 → 103 tests, still ~2 s.
 - Website `script.js` dark-mode-toggle no longer wipes the inline SVG sun/moon icons with a Unicode entity on the first call &mdash; the CSS-based icon swap (already shipped) now works as designed.
+- Website gallery click-to-enlarge actually works now. The lightbox handler in `script.js` was looking for a `.gallery-placeholder` child of `.gallery-item` that doesn't exist in the current Figure-4 markup (only an `<img>`), so clicks silently did nothing despite the subtitle's "click to enlarge" promise. Now falls back to cloning the `<img>` directly.
 
 ## [0.1.2] — 2026-05-16
 
